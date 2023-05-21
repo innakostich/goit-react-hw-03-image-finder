@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import axios from 'axios';
 import Searchbar from './Searchbar/Searchbar';
@@ -86,15 +85,14 @@ class App extends Component {
 
   render() {
     const { images, isLoading, modalImage } = this.state;
+    const showLoadMoreButton = images.length > 0 && !isLoading;
 
     return (
       <div className={css.container}>
         <Searchbar onSubmit={this.handleSearch} />
         <ImageGallery images={images} onItemClick={this.handleImageClick} />
         {isLoading && <Loader />}
-        {images.length > 0 && !isLoading && (
-          <Button onClick={this.handleLoadMore} />
-        )}
+        {showLoadMoreButton && <Button onClick={this.handleLoadMore} />}
         <Modal
           isOpen={modalImage !== ''}
           image={modalImage}
