@@ -1,33 +1,50 @@
-
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import css from './ImageGallery.module.css';
 import Modal from '../Modal/Modal';
 import { nanoid } from 'nanoid';
 
-const ImageGallery = ({ images, onItemClick }) => {
-  const [modalImage, setModalImage] = useState('');
+class ImageGallery extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalImage: '',
+    };
+  }
 
-  const handleImageClick = (imageUrl) => {
-    setModalImage(imageUrl);
+  handleImageClick = (imageUrl) => {
+    this.setState({ modalImage: imageUrl });
   };
 
-  const handleCloseModal = () => {
-    setModalImage('');
+  handleCloseModal = () => {
+    this.setState({ modalImage: '' });
   };
 
-  return (
-    <div>
-      <ul className={css.gallery}>
-        {images.map((image) => (
-          <ImageGalleryItem key={nanoid()} image={image} onClick={handleImageClick} />
-        ))}
-      </ul>
-      <Modal isOpen={modalImage !== ''} image={modalImage} onClose={handleCloseModal} />
-    </div>
-  );
-};
+  render() {
+    const { images } = this.props;
+    const { modalImage } = this.state;
+
+    return (
+      <div>
+        <ul className={css.gallery}>
+          {images.map((image) => (
+            <ImageGalleryItem
+              key={nanoid()}
+              image={image}
+              onClick={this.handleImageClick}
+            />
+          ))}
+        </ul>
+        <Modal
+          isOpen={modalImage !== ''}
+          image={modalImage}
+          onClose={this.handleCloseModal}
+        />
+      </div>
+    );
+  }
+}
 
 ImageGallery.propTypes = {
   images: PropTypes.arrayOf(
@@ -37,7 +54,6 @@ ImageGallery.propTypes = {
       largeImageURL: PropTypes.string.isRequired,
     })
   ).isRequired,
-  onItemClick: PropTypes.func.isRequired,
 };
 
 export default ImageGallery;

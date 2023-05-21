@@ -1,8 +1,6 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import basicLightbox from 'basiclightbox';
-import 'basiclightbox/dist/basicLightbox.min.css';
 import css from './Modal.module.css';
 
 class Modal extends Component {
@@ -26,17 +24,16 @@ class Modal extends Component {
     }
   };
 
-  openModal = () => {
-    basicLightbox.create(`<img src="${this.props.image}" alt="" />`).show();
-  };
-
   render() {
-    const { isOpen } = this.props;
+    const { isOpen, image } = this.props;
 
     return (
-      <div className={isOpen ? css.overlay : css.hidden} onClick={this.handleClick}>
+      <div
+        className={isOpen ? css.overlay : css.hidden}
+        onClick={this.handleClick}
+      >
         <div className={css.modal}>
-          <img src={this.props.image} alt="" onClick={this.openModal} />
+          <img src={image} alt="" />
         </div>
       </div>
     );
@@ -50,4 +47,3 @@ Modal.propTypes = {
 };
 
 export default Modal;
-

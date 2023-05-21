@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react';
+import axios from 'axios';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Loader from './Loader/Loader';
@@ -20,11 +21,11 @@ class App extends Component {
   }
 
   handleSearch = (query) => {
-    this.setState({ searchQuery: query, page: 1, images: [] });
+    this.setState({ searchQuery: query, page: 1, images: [] }, this.fetchImages);
   };
 
   handleLoadMore = () => {
-    this.setState((prevState) => ({ page: prevState.page + 1 }));
+    this.setState((prevState) => ({ page: prevState.page + 1 }), this.fetchImages);
   };
 
   handleImageClick = (imageUrl) => {
@@ -48,7 +49,7 @@ class App extends Component {
     }
   }
 
-  fetchImages = async () => {
+  fetchImages = () => {
     const { searchQuery, page } = this.state;
     if (searchQuery === '') {
       return;
@@ -56,24 +57,31 @@ class App extends Component {
 
     this.setState({ isLoading: true });
 
-    try {
-      const response = await fetch(
-        `https://pixabay.com/api/?key=34787029-9060cf1f0b6b2569d575ff8e0&per_page=12&q=${searchQuery}&page=${page}`
-      );
-      const data = await response.json();
-      const newImages = data.hits.map((image) => ({
-        id: image.id,
-        webformatURL: image.webformatURL,
-        largeImageURL: image.largeImageURL,
-      }));
-      this.setState((prevState) => ({
-        images: [...prevState.images, ...newImages],
-      }));
-    } catch (error) {
-      console.error('Error fetching images:', error);
-    }
-
-    this.setState({ isLoading: false });
+    axios
+      .get('https://pixabay.com/api/', {
+        params: {
+          key: '34787029-9060cf1f0b6b2569d575ff8e0',
+          per_page: 12,
+          q: searchQuery,
+          page: page,
+        },
+      })
+      .then((response) => {
+        const newImages = response.data.hits.map((image) => ({
+          id: image.id,
+          webformatURL: image.webformatURL,
+          largeImageURL: image.largeImageURL,
+        }));
+        this.setState((prevState) => ({
+          images: [...prevState.images, ...newImages],
+        }));
+      })
+      .catch((error) => {
+        console.error('Error fetching images:', error);
+      })
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
   };
 
   render() {
