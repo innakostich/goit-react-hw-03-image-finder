@@ -1,92 +1,19 @@
-// import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
-// import css from './Modal.module.css';
-
-// class Modal extends Component {
-//   handleKeyDown = (e) => {
-//     if (e.key === 'Escape') {
-//       this.props.onClose();
-//     }
-//   };
-
-//   handleClick = (e) => {
-//     if (e.target === e.currentTarget) {
-//       this.props.onClose();
-//     }
-//   };
-
-//   render() {
-//     const { isOpen, image } = this.props;
-
-//     if (!isOpen) {
-//       return null;
-//     }
-
-//     return (
-//       <div className={css.overlay} onClick={this.handleClick} onKeyDown={this.handleKeyDown} tabIndex={0}>
-//         <div className={css.modal}>
-//           <img src={image} alt="" />
-//         </div>
-//       </div>
-//     );
-//   }
-// }
-
-// Modal.propTypes = {
-//   isOpen: PropTypes.bool.isRequired,
-//   image: PropTypes.string.isRequired,
-//   onClose: PropTypes.func.isRequired,
-// };
-
-// export default Modal;
-
-// import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
-// import css from './Modal.module.css';
-
-// class Modal extends Component {
-//   handleKeyDown = (e) => {
-//     if (e.key === 'Escape') {
-//       this.props.onClose();
-//     }
-//   };
-
-//   handleClick = (e) => {
-//     if (e.target === e.currentTarget) {
-//       this.props.onClose();
-//     }
-//   };
-
-//   render() {
-//     const { isOpen, image } = this.props;
-
-//     if (!isOpen) {
-//       return null;
-//     }
-
-//     return (
-//       <div className={css.overlay}  onClick={this.handleClick} onKeyDown={this.handleKeyDown} tabIndex={0}>
-//         <div className={css.modal}>
-//           <img src={image} alt="" />
-//         </div>
-//       </div>
-//     );
-//   }
-// }
-
-// Modal.propTypes = {
-//   isOpen: PropTypes.bool.isRequired,
-//   image: PropTypes.string.isRequired,
-//   onClose: PropTypes.func.isRequired,
-// };
-
-// export default Modal;
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import css from './Modal.module.css'
+import basicLightbox from 'basiclightbox';
+import 'basiclightbox/dist/basicLightbox.min.css';
+import css from './Modal.module.css';
 
 class Modal extends Component {
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
   handleKeyDown = (e) => {
     if (e.key === 'Escape') {
       this.props.onClose();
@@ -99,17 +26,17 @@ class Modal extends Component {
     }
   };
 
-  render() {
-    const { isOpen, image } = this.props;
+  openModal = () => {
+    basicLightbox.create(`<img src="${this.props.image}" alt="" />`).show();
+  };
 
-    if (!isOpen) {
-      return null;
-    }
+  render() {
+    const { isOpen } = this.props;
 
     return (
-      <div className={css.overlay} onClick={this.handleClick} onKeyDown={this.handleKeyDown} tabIndex={0}>
+      <div className={isOpen ? css.overlay : css.hidden} onClick={this.handleClick}>
         <div className={css.modal}>
-          <img src={image} alt="" />
+          <img src={this.props.image} alt="" onClick={this.openModal} />
         </div>
       </div>
     );
@@ -123,3 +50,4 @@ Modal.propTypes = {
 };
 
 export default Modal;
+
