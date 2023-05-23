@@ -21,12 +21,12 @@ class App extends Component {
 
   handleSearch = (query) => {
     if (query !== this.state.searchQuery) {
-      this.setState({ searchQuery: query, page: 1, images: [] }, this.fetchImages);
+      this.setState({ searchQuery: query, page: 1, images: [] });
     }
   };
 
   handleLoadMore = () => {
-    this.setState((prevState) => ({ page: prevState.page + 1 }), this.fetchImages);
+    this.setState((prevState) => ({ page: prevState.page + 1 }));
   };
 
   handleImageClick = (imageUrl) => {
